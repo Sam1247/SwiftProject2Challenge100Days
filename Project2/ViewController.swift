@@ -31,39 +31,70 @@ class ViewController: UIViewController {
         button2.layer.borderColor = UIColor.lightGray.cgColor
         button3.layer.borderColor = UIColor.lightGray.cgColor
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(showScore))
+        
         countries += ["estonia", "france", "germany", "ireland", "italy", "monaco", "nigeria", "poland", "russia", "spain", "uk", "us"]
         askQuestion()
     }
 
-    func askQuestion(action: UIAlertAction! = nil) {
+    func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
         button1.setImage(UIImage(named: countries[0]), for: .normal)
         button2.setImage(UIImage(named: countries[1]), for: .normal)
         button3.setImage(UIImage(named: countries[2]), for: .normal)
-        title = countries[correctAnswer].uppercased() + " - Score: \(score)"
+        title = countries[correctAnswer].uppercased()
+    }
+    
+    @objc func showScore () {
+        let ACShowScore =  UIAlertController(title: "SCORE", message: "your score is \(score)", preferredStyle: .alert)
+        ACShowScore.addAction(UIAlertAction(title: "Continue", style: .default, handler: nil))
+        present(ACShowScore, animated: true)
     }
 
     @IBAction func buttonTaped(_ sender: UIButton) {
         numberOfQuestion += 1
-        let ac: UIAlertController
         if sender.tag == correctAnswer {
             score += 1
-            ac = UIAlertController(title: "Correct", message: "your score is \(score)", preferredStyle: .alert)
-            title = countries[correctAnswer].uppercased() + " - Score: \(score)"
+            title = countries[correctAnswer].uppercased()
         } else {
             score -= 1
-            ac = UIAlertController(title: "Wrong", message: "That's a flag of \(countries[sender.tag]) \n your score is \(score)", preferredStyle: .alert)
-            title = countries[correctAnswer].uppercased() + " - Score: \(score)"
+            title = countries[correctAnswer].uppercased()
         }
         if numberOfQuestion == 10 {
-            ac.addAction(UIAlertAction(title: "Restart", style: .default, handler: askQuestion))
+            let ACShareScore =  UIAlertController(title: "SCORE", message: "your score is \(score)", preferredStyle: .alert)
+            ACShareScore.addAction(UIAlertAction(title: "Share", style: .default, handler: shareScore))
+            ACShareScore.addAction(UIAlertAction(title: "cancel", style: .default, handler: nil))
+            present(ACShareScore, animated: true)
             score = 0
             numberOfQuestion = 0
-        } else {
-            ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
         }
-        present(ac, animated: true)
+        askQuestion()
+//        let ac: UIAlertController
+//        if sender.tag == correctAnswer {
+//            score += 1
+//            ac = UIAlertController(title: "Correct", message: "your score is \(score)", preferredStyle: .alert)
+//            title = countries[correctAnswer].uppercased() + " - Score: \(score)"
+//        } else {
+//            score -= 1
+//            ac = UIAlertController(title: "Wrong", message: "That's a flag of \(countries[sender.tag]) \n your score is \(score)", preferredStyle: .alert)
+//            title = countries[correctAnswer].uppercased() + " - Score: \(score)"
+//        }
+//        if numberOfQuestion == 10 {
+//            ac.addAction(UIAlertAction(title: "Restart", style: .default, handler: askQuestion))
+//            score = 0
+//            numberOfQuestion = 0
+//        } else {
+//            ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
+//        }
+//        present(ac, animated: true)
+    }
+    
+    func shareScore (action: UIAlertAction! = nil) {
+        let vc = UIActivityViewController(activityItems: [score], applicationActivities: [])
+        // this line for compatablity with iPad
+        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        present(vc, animated: true)
     }
 }
 
