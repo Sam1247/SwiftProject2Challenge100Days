@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var button2: UIButton!
     @IBOutlet weak var button3: UIButton!
     
+    
     var countries = [String]()
     var score = 0
     var correctAnswer = 0
